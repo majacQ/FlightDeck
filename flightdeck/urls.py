@@ -30,8 +30,11 @@ urls.extend([
 	# API Browser
 	(r'^api/', include('api.urls')),
 
+	# Tutorial
+	(r'^tutorial/', include('tutorial.urls')),
+
 	# Jetpack
 	(r'^user/', include('person.urls')),
-	(r'^', include('jetpack.urls')),
+	(r'', include('jetpack.urls'))
 ])
 urlpatterns = patterns('', *urls)

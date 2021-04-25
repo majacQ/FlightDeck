@@ -1,14 +1,5 @@
-/*
----
-filename: UI.File_Listing.css
-decription: Provides base layout for FlightDeck
-license: MIT-style license.
-authors:
- - Oskar Krawczyk (http://nouincolor.com/)
-...
-*/
-
 .UI_File_Listing {
+	/*min-height: 75px;*/
 }
 
    .UI_File_Listing li {

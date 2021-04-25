@@ -47,19 +47,23 @@ FlightDeck = Class.refactor(FlightDeck,{
 		
 		this.warning = new Roar({
 			className: 'roar warning',
-			position: 'bottomCenter',
+			position: 'topCenter',
 			duration: 8000
 		});
 		this.error = new Roar({
-			position: 'bottomLeft',
+			position: 'topLeft',
 			className: 'roar error',
 			duration: 20000
 		});
 		this.message = new Roar({
-			position: 'bottomRight',
+			position: 'topRight',
 			className: 'roar message',
 			duration: 8000
 		});
+		// compatibility with Django messages 
+		// http://docs.djangoproject.com/en/dev/ref/contrib/messages/#message-tags
+		this.success = this.info = this.message;
+		this.debug = this.warning;
 		this.parseMessages();
 		this.parseNotImplemented();
 	},
@@ -69,7 +73,7 @@ FlightDeck = Class.refactor(FlightDeck,{
 	 * displays messages and removes elements from DOM
 	 */
 	parseMessages: function() {
-		['message', 'warning', 'error'].each(function(t) {
+		['message', 'warning', 'error', 'success', 'info', 'debug'].each(function(t) {
 			$$('.fd_'+t).each(function(el) {
 				this[t].alert(el.get('title') || t, el.get('text'));
 				el.destroy();
@@ -81,6 +85,11 @@ FlightDeck = Class.refactor(FlightDeck,{
 			e.stop();
 			fd.warning.alert('Not Implemented',this.get('rel') || 'This feature is under construction');
 		});
+	},
+	/* default messages and errors */
+	alertNotAuthenticated: function(msg){
+		var message = msg || 'You\'ve got to be <a href="{person_login_url}">signed in</a> to perfom this action'.substitute(settings);
+		this.error.alert('Not authenticated', message);
 	}
 
 });

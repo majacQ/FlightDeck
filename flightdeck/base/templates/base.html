@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{# Base HTML every page will use #}
+{# Base HTML, every page will use #}
 {% load base_helpers %}
 <html lang="en">
 	<head>
@@ -20,6 +20,7 @@
 		<script src="/media/js/FlightDeck.Dropdown.js"></script>
 		<script src="/media/js/FlightDeck.PickVersion.js"></script>
 		<script src="/media/jetpack/js/Create.js"></script>
+		<title>{% block title %}{% endblock %}{{ settings.SITE_TITLE }}</title>
 		{% block head %}{% endblock %}
 		{% block roar_css %}
 			<link href="/media/roar/Roar.css" rel="stylesheet" type="text/css" />
@@ -30,59 +31,97 @@
 			var fd;
 			var settings = {
 				{% block app_settings %}{% endblock %}{% block page_settings %}{% endblock %}
-				jp_jetpack_create_url: '{% url jp_jetpack_create %}',
-				jp_capability_create_url: '{% url jp_capability_create %}',
+				addons_helper: '{{ settings.ADDONS_HELPER_URL }}',
+				person_login_url: '{{ settings.LOGIN_URL }}',
+				jp_addon_create_url: '{% url jp_addon_create %}',
+				jp_library_create_url: '{% url jp_library_create %}',
 				create_modal_template: '{% escape_template "_create.html" %}',
-				user: '{{ request.user }}',
+				user: '{{ user.username }}', 
 				DEBUG: {{ settings.DEBUG|yesno:"true,false" }}
 			};
 			window.addEvent('domready', function() {
 				fd = new FlightDeck({'user': '{{ user.username }}'});
-				{% block create_init %}
+				{% block create_init %}{% comment %}
 					create.init(
-						['create_jetpack', 'create_capability'],
-						['jetpack','capability'],
+						['create_addon', 'create_library'],
+						['addon','library'],
 						'app-body'
 					);
-				{% endblock %}
+				{% endcomment %}{% endblock %}
 				{% block app_domready %}{% endblock %}
 				{% block page_domready %}{% endblock %}
 			});
 		</script>
 		<style>.hidden { display: none; }</style>
 	</head>
-	<body id="{{ body_id }}">
+	<body id="{{ page }}">
+		{# mesages system http://docs.djangoproject.com/en/dev/ref/contrib/messages/#adding-a-message #}
+		{% if messages %}
+		    {% for message in messages %}
+			    <p{% if message.tags %} class="fd_{{ message.tags }}"{% endif %}>{{ message }}</p>
+			{% endfor %}
+		{% endif %}
 		<div id="wrapper">
 		
 			<header id="app-header">
 				{% block header %}{% include "_header.html" %}{% endblock %}
-			</header> <!-- /main-header -->
+			</header> <!-- /app-header -->
 
-			{% block app_menu %}
+			{% block app_menu %}{% comment %}
 				<div id="editor-menu-wrapper">
 					<ul class="UI_Editor_Menu minimal">
-						<li class="UI_Editor_Menu_Button Icon_new">
-							<a id="create_jetpack" title="" href="#">New extension<span class="UI_Editor_Icon"></span></a>
-						</li>
-						<li class="UI_Editor_Menu_Button Icon_new">
-							<a id="create_capability" title="" href="#">New library<span class="UI_Editor_Icon"></span></a>
-						</li>
+						{% include "_base_app_menu_items.html" %}
 					</ul>
-				</div>
-			{% endblock %}
+				</div><!-- /editor-menu-wrapper -->
+			{% endcomment %}{% endblock %}
 
 			<div id="app-body">
 				{% block app_body %}
 				{% endblock %}
-				<aside id="app-sidebar" class="UI_Sidebar">
-					{% block app_sidebar %}{%endblock %}
-				</aside> <!-- /app-sidebar -->
-				<section id="app-content">
-					{% block app_content %}{% endblock %}
-				</section> <!-- /app-content -->
+				
+				{% block base_fluid_width %}
+					<div class="UI_middleWrapper page">
+						<aside id="app-sidebar" class="UI_Sidebar">
+							{% block app_sidebar %}{%endblock %}
+						</aside> <!-- /app-sidebar -->
+						<section id="app-content">
+							{% block app_content %}{% endblock %}
+						</section> <!-- /app-content -->
+					</div> <!-- /UI_middleWrapper -->
+				{% endblock %}
+				
 			</div> <!-- /app-body -->
+			{% block footer %}
+				<footer id="app-footer">
+					<div id="footer" role="contentinfo">
+						<div class="UI_middleWrapper">
+							<div class="section">
+								<div class="primary">
+									<p>
+										Except where otherwise <a href="http://www.mozilla.com/en-US/about/legal.html#site">noted</a>, 
+										content on this site is licensed under the
+										<strong><a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution Share-Alike License v3.0</a></strong> 
+										or any later version<span title="#">.</span>
+									</p>
+									<ul>
+										<li><a href="http://www.mozilla.com/en-US/privacy-policy.html">Privacy Policy</a></li>
+										<li><a href="http://www.mozilla.com/en-US/about/legal.html">Legal Notices</a></li>
+										<li><a href="http://mozillalabs.com/jetpack">Blog</a></li>
+										<li><a href="https://addons.mozilla.org/en-US/developers">Developer Hub</a></li>
+										<li><a href="http://groups.google.com/group/mozilla-labs-jetpack/topics">Forum</a></li>
+									</ul>
+									<p class="disclaimer">Mozilla is providing links to these applications as a courtesy, and makes no representations regarding the applications or any information related thereto. Any questions, complaints or claims regarding the applications must be directed to the appropriate software vendor.
+									</p>
+								</div> <!-- /primary -->
+								<div class="secondary">
+									<img src="/media/jetpack/img/mozilla/fox-logo-footer.png" alt="" />
+								</div> <!-- /secondary -->
+							</div> <!-- /section -->
+						</div> <!-- /UI_middleWrapper -->
+					</div> <!-- /footer -->
+				</footer> <!-- /page-info -->
+			{% endblock %}
 			
-			<footer id="app-footer"></footer> <!-- /page-info -->
 		
 		</div> <!-- /wrapper -->
 		

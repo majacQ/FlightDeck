@@ -12,7 +12,9 @@ var FDEditor = new Class({
 	Implements: [Options, Events],
 	$name: 'FlightDeckEditor',
 	options: {
-		element: "version_content"
+		// element: "main_textarea",
+		activate: false,
+		readonly: false
 	},
 	initialize: function(options) {
 		this.setOptions(options);

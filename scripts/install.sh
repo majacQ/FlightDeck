@@ -26,6 +26,13 @@ then
 	mkdir $PROJECT_DIR/$PROJECT_NAME/media/
 fi
 
+### link tutorial application 
+if [ ! -e $PROJECT_DIR/$PROJECT_NAME/media/tutorial ]
+then
+	ln -fs $PROJECT_DIR/$PROJECT_NAME/tutorial/media/ $PROJECT_DIR/$PROJECT_NAME/media/tutorial
+fi
+
+
 ### link jetpack application 
 if [ ! -e $PROJECT_DIR/$PROJECT_NAME/media/jetpack ]
 then
@@ -113,6 +120,7 @@ then
 	ln -fs $V_ENV/src/jetpack-sdk/packages $V_ENV/packages
 	# link libs unable to install via pip
 	ln -fs $V_ENV/src/jetpack-sdk/python-lib/cuddlefish $SITE_PACKAGES/cuddlefish
+	ln -fs $V_ENV/src/jetpack-sdk/python-lib/ecdsa $SITE_PACKAGES/ecdsa
 	# link static files
 	ln -fs $V_ENV/src/jetpack-sdk/static-files $V_ENV/static-files
 fi

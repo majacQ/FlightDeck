@@ -16,12 +16,15 @@ def sdk_copy(sdk_dir):
 	create cfx.sh which will set environment and call 'real' cfx
 	"""
 	shutil.copytree('%s/src/jetpack-sdk' % settings.VIRTUAL_ENV, sdk_dir)
+	# create cfx.sh
 	handle = open('%s/bin/cfx.sh' % sdk_dir, 'w')
 	handle.write("""#!/bin/bash
-source %s/bin/activate
-CUDDLEFISH_ROOT=%s
-export CUDDLEFISH_ROOT
-cfx $*""" % (sdk_dir, sdk_dir))
+ADDON_DIR=`pwd`
+SDK_DIR=%s
+cd $SDK_DIR
+source $SDK_DIR/bin/activate
+cd $ADDON_DIR
+cfx $*""" % sdk_dir)
 	handle.close()
 	os.chmod('%s/bin/cfx.sh' % sdk_dir, stat.S_IXUSR|stat.S_IRUSR)
 	
@@ -39,6 +42,7 @@ def xpi_build(sdk_dir, package_dir):
 	cfx_command = [
 		'%s/bin/cfx.sh' % sdk_dir,
 		'--binary=/usr/bin/xulrunner',
+		'--keydir=%s/%s' % (sdk_dir, settings.KEYDIR),
 		'xpi']
 
 	try:
